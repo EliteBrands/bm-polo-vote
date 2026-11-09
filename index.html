@@ -141,7 +141,7 @@ img { max-width: 100%; }
   <p class="intro">New Birdie Mafia golf polos, and the crew gets a say. Round 2 is up top, round 1 further down. These are concept mockups, so the bird is close but not exact. <strong>Tap any shirt to zoom in</strong> (scroll, pinch or double-tap to zoom, drag to look around). Vote <strong>Keep</strong>, <strong>Tweak</strong> or <strong>Pass</strong> on as many as you like and add a comment. Your votes save as you go, and everyone sees the tally. Come back any time to change your mind.</p>
   <p class="status" id="status" role="status">Connecting to the vote…</p>
   <div class="namebox" id="namebox" hidden>
-    <label for="name-in">First, who's voting?</label>
+    <label for="name-in">First, who's voting? Pop your name in so the crew knows whose votes are whose.</label>
     <div class="namerow"><input id="name-in" type="text" maxlength="40" autocomplete="name" placeholder="Your name or nickname"><button type="button" class="copy" id="name-go">Let's go</button></div>
   </div>
   <p class="hello" id="hello" hidden></p>
@@ -405,6 +405,7 @@ img { max-width: 100%; }
           mode = "shared";
           setStatus("");
           if (Object.keys(picks).length) persist(0); // bring earlier picks into the vote
+          if (!myName) { nameBox.hidden = false; }    // ask up front, before the first vote
         }
         applyVoters(res && res.voters);
       });
