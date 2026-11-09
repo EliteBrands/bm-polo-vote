@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Birdie Mafia Polo Vote</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Questrial&display=swap">
+<style>
+/* Layout: black brand band, then theme sections of numbered concept cards in a 2-col grid; sticky picks bar at the bottom. Single dark look, by choice (matches the store footer and hats). */
+:root {
+  --ink: #0b0b0b;
+  --panel: #161616;
+  --line: #2a2a2a;
+  --paper: #f4f4f2;
+  --muted: #a3a29c;
+  --yellow: #feec45;
+  --display: "Oswald", "Arial Narrow", sans-serif;
+  --body: "Century Gothic", "Questrial", "Avenir", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--ink); color: var(--paper); font-family: var(--body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.top { border-bottom: 1px solid var(--line); }
+.top .wrap { padding-block: 32px 28px; display: grid; gap: 18px; }
+.top img { width: 190px; height: auto; }
+h1 { font-family: var(--display); font-weight: 500; text-transform: uppercase; font-size: clamp(30px, 5vw, 52px); line-height: 1.05; margin: 0; letter-spacing: 0.01em; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--yellow); }
+.intro { max-width: 64ch; color: var(--muted); margin: 0; }
+.intro strong { color: var(--paper); font-weight: 400; }
+main .wrap { padding-block: 8px 120px; display: grid; gap: 48px; }
+section { display: grid; gap: 18px; }
+.sec { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding-top: 36px; border-top: 1px solid var(--line); }
+section:first-child .sec { border-top: 0; }
+h2 { font-family: var(--display); font-weight: 500; text-transform: uppercase; font-size: 26px; letter-spacing: 0.04em; margin: 0; }
+.sec p { margin: 0; color: var(--muted); flex-basis: 100%; max-width: 70ch; }
+.round { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px; color: var(--ink); background: var(--yellow); padding: 3px 8px; align-self: center; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; transition: border-color .15s, opacity .15s; }
+.card[data-v="keep"] { border-color: var(--yellow); }
+.card[data-v="tweak"] { border-color: var(--paper); border-style: dashed; }
+.card[data-v="pass"] .shot img { opacity: 0.35; }
+.card[data-v="pass"] h3 { color: var(--muted); text-decoration: line-through; }
+.shot { display: block; background: #e9e9e9; }
+.shot img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.meta { display: flex; align-items: center; gap: 12px; padding: 14px 16px 4px; }
+.num { font-family: var(--display); font-size: 15px; color: var(--yellow); font-variant-numeric: tabular-nums; min-width: 2.4em; }
+h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: 0.03em; font-size: 19px; margin: 0; flex: 1; min-width: 0; }
+.card p { margin: 0; padding: 4px 16px 16px; color: var(--muted); font-size: 14px; }
+.choice { display: flex; padding: 8px 16px 0; }
+.opt { flex: 1; font-family: var(--display); text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; padding: 8px 10px; background: transparent; color: var(--paper); border: 1px solid var(--line); cursor: pointer; }
+.opt + .opt { border-left: 0; }
+.opt:hover { color: var(--yellow); }
+.opt[data-v="keep"][aria-pressed="true"] { background: var(--yellow); color: var(--ink); border-color: var(--yellow); }
+.opt[data-v="tweak"][aria-pressed="true"] { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.opt[data-v="pass"][aria-pressed="true"] { background: var(--line); color: var(--paper); }
+.note { display: grid; gap: 6px; padding: 10px 16px 0; }
+.note label { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px; color: var(--muted); }
+textarea, .zoom-note input { width: 100%; font: inherit; font-size: 14px; color: var(--paper); background: var(--ink); border: 1px solid var(--line); padding: 8px 10px; resize: vertical; }
+textarea:focus, .zoom-note input:focus { outline: none; border-color: var(--yellow); }
+.spec { padding: 10px 16px 14px; margin-top: auto; }
+.spec summary { cursor: pointer; font-family: var(--display); text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px; color: var(--muted); width: max-content; }
+.spec summary:hover, .spec summary:focus-visible { color: var(--yellow); outline: none; }
+.card .spec p { padding: 8px 0 0; }
+.opt:disabled { opacity: .4; cursor: default; }
+.tally { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px 0; font-family: var(--display); text-transform: uppercase; letter-spacing: 0.05em; font-size: 12px; font-variant-numeric: tabular-nums; }
+.tally span { padding: 3px 8px; border: 1px solid var(--line); color: var(--muted); }
+.tally .t-keep { color: var(--ink); background: var(--yellow); border-color: var(--yellow); }
+.tally .t-tweak { color: var(--ink); background: var(--paper); border-color: var(--paper); }
+.crew { list-style: none; margin: 0; padding: 8px 16px 0; display: grid; gap: 5px; font-size: 13.5px; color: var(--muted); }
+.crew b { color: var(--paper); font-weight: 400; }
+.crew .v { font-family: var(--display); text-transform: uppercase; font-size: 11px; letter-spacing: 0.06em; margin-right: 6px; padding: 0 6px; border: 1px solid var(--line); color: var(--paper); }
+.crew .v-keep { border-color: var(--yellow); color: var(--yellow); }
+.status { margin: 0; max-width: 70ch; padding: 10px 14px; background: var(--panel); border-left: 3px solid var(--yellow); color: var(--paper); font-size: 14px; }
+.leader ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.leader a { display: grid; grid-template-columns: 2.2em 76px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 6px 14px 6px 6px; background: var(--panel); border: 1px solid var(--line); color: inherit; text-decoration: none; }
+.leader a:hover, .leader a:focus-visible { border-color: var(--yellow); outline: none; }
+.leader img { width: 76px; height: 57px; object-fit: cover; background: #e9e9e9; display: block; }
+.rank { font-family: var(--display); font-size: 22px; color: var(--yellow); text-align: center; font-variant-numeric: tabular-nums; }
+.lname { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.03em; font-size: 17px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lcount { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.04em; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 560px) { .leader a { grid-template-columns: 1.8em 60px minmax(0, 1fr); } .leader img { width: 60px; height: 45px; } .lcount { grid-column: 3; } }
+.save { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.06em; font-size: 13px; opacity: .75; }
+.namebox { display: grid; gap: 8px; max-width: 440px; padding: 14px; background: var(--panel); border: 1px solid var(--yellow); }
+.namebox label, .gate-card label { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.06em; font-size: 13px; color: var(--yellow); }
+.namerow { display: flex; gap: 8px; }
+.namerow input { flex: 1; min-width: 0; font: inherit; font-size: 15px; color: var(--paper); background: var(--ink); border: 1px solid var(--line); padding: 9px 12px; }
+.namerow input:focus { outline: none; border-color: var(--yellow); }
+.namerow .copy { background: var(--yellow); color: var(--ink); }
+.hello { margin: 0; color: var(--muted); font-size: 14px; }
+.hello button { font: inherit; font-size: 13px; color: var(--yellow); background: none; border: 0; padding: 0 0 0 6px; cursor: pointer; text-decoration: underline; }
+.gate { position: fixed; inset: 0; z-index: 30; background: var(--ink); display: grid; place-items: center; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.gate-card { width: min(420px, 100%); display: grid; gap: 12px; padding: 28px 24px; background: var(--panel); border: 1px solid var(--line); }
+.gate-card img { width: 180px; height: auto; margin-bottom: 8px; }
+.gate-card p { margin: 0; color: #ff8a80; font-size: 14px; }
+.opt:focus-visible, .copy:focus-visible, .shot:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--yellow); color: var(--ink); padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 5; }
+.bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 12px; }
+.bar .picks { flex: 1; min-width: 0; white-space: pre-line; font-family: var(--display); text-transform: uppercase; letter-spacing: 0.04em; font-size: 16px; }
+.copy { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; padding: 8px 16px; background: var(--ink); color: var(--yellow); border: 0; cursor: pointer; }
+.copy:disabled { opacity: .45; cursor: default; }
+.shot { cursor: zoom-in; }
+.zoom { position: fixed; inset: 0; z-index: 20; background: var(--ink); display: grid; grid-template-rows: auto 1fr; }
+.zoom-bar { display: flex; align-items: center; gap: 8px; padding-top: calc(10px + env(safe-area-inset-top, 0px)); padding-bottom: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); border-bottom: 1px solid var(--line); }
+.zoom-title { flex: 1; min-width: 0; font-family: var(--display); text-transform: uppercase; letter-spacing: 0.04em; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.zoom-title span { color: var(--yellow); margin-right: 10px; }
+.zbtn { font-family: var(--display); font-size: 16px; min-width: 40px; height: 40px; padding: 0 12px; background: transparent; color: var(--paper); border: 1px solid var(--line); cursor: pointer; }
+.zbtn:hover { border-color: var(--yellow); color: var(--yellow); }
+.zbtn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+.zbtn.zopt { text-transform: uppercase; letter-spacing: 0.06em; font-size: 13px; }
+.zbtn.zopt[data-v="keep"][aria-pressed="true"] { background: var(--yellow); color: var(--ink); border-color: var(--yellow); }
+.zbtn.zopt[data-v="tweak"][aria-pressed="true"] { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.zbtn.zopt[data-v="pass"][aria-pressed="true"] { background: var(--line); color: var(--paper); }
+.zoom-note { display: flex; align-items: center; gap: 10px; padding-block: 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); border-bottom: 1px solid var(--line); }
+.zoom-note label { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.zoom { display: flex; flex-direction: column; }
+.zoom-stage { flex: 1 1 auto; min-height: 0; }
+@media (max-width: 560px) { .zoom-bar { flex-wrap: wrap; } .zoom-title { flex-basis: 100%; } }
+.zoom-stage { position: relative; overflow: hidden; touch-action: none; cursor: grab; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.zoom-stage.dragging { cursor: grabbing; }
+.zoom-stage img { position: absolute; left: 50%; top: 50%; max-width: 96%; max-height: 96%; width: auto; height: auto; transform-origin: 0 0; user-select: none; -webkit-user-drag: none; }
+.zoom-pct { font-family: var(--display); font-size: 13px; color: var(--muted); min-width: 3.5em; text-align: center; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .zbtn.nav, .zoom-pct { display: none; } }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+body { margin: 0; }
+img { max-width: 100%; }
+</style>
+<script src="config.js"></script>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <img src="logo-white.png" alt="Birdie Mafia" width="1198" height="433">
+  <h1>Polo vote <em>The crew</em></h1>
+  <p class="intro">New Birdie Mafia golf polos, and the crew gets a say. Round 2 is up top, round 1 further down. These are concept mockups, so the bird is close but not exact. <strong>Tap any shirt to zoom in</strong> (scroll, pinch or double-tap to zoom, drag to look around). Vote <strong>Keep</strong>, <strong>Tweak</strong> or <strong>Pass</strong> on as many as you like and add a comment. Your votes save as you go, and everyone sees the tally. Come back any time to change your mind.</p>
+  <p class="status" id="status" role="status">Connecting to the vote…</p>
+  <div class="namebox" id="namebox" hidden>
+    <label for="name-in">First, who's voting?</label>
+    <div class="namerow"><input id="name-in" type="text" maxlength="40" autocomplete="name" placeholder="Your name or nickname"><button type="button" class="copy" id="name-go">Let's go</button></div>
+  </div>
+  <p class="hello" id="hello" hidden></p>
+</div></header>
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <img src="logo-white.png" alt="Birdie Mafia" width="1198" height="433">
+    <label for="gate-in">Crew passcode</label>
+    <div class="namerow"><input id="gate-in" type="text" autocomplete="off" autocapitalize="off" placeholder="Ask Dan"><button type="button" class="copy" id="gate-go">Enter</button></div>
+    <p id="gate-err" hidden>That's not it. Try again.</p>
+  </div>
+</div>
+
+<main><div class="wrap">
+  <section class="leader" id="leader" hidden>
+    <header class="sec"><h2>Crew favourites</h2><p id="voters"></p></header>
+    <ol id="leader-list"></ol>
+  </section>
+  <section><header class="sec"><span class="round">Round 2</span><h2>Micro repeat</h2><p>Small even repeat, printed collar, accent colour under the collar and inside the placket, 3 cm chest tag.</p></header><div class="grid"><article class="card" data-id="21" id="c21"><a class="shot" href="img/2k/21-tonal-flock.jpg" target="_blank" rel="noopener"><img src="img/21-tonal-flock.jpg" alt="Polo concept 21: Tonal Flock" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#21</span><h3>Tonal Flock</h3></div><div class="choice" role="group" aria-label="Decision for #21"><button type="button" class="opt" data-v="keep" id="keep-21" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-21" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-21" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-21">What should change?</label><textarea id="note-21" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over small repeat of the fedora bird mascot, each bird about 3 cm tall, about 15 across the chest, evenly spaced on a staggered grid. Tonal and low-contrast: charcoal birds on a black base, so it reads almost solid from a distance. Collar in the same print; underside of the collar and inner placket solid yellow (#feec45). Small 3 x 3 cm yellow square tag printed on the left chest beside the placket, with the black bird mark inside. Black buttons.</p></details></article><article class="card" data-id="22" id="c22"><a class="shot" href="img/2k/22-putter-tommy-guns.jpg" target="_blank" rel="noopener"><img src="img/22-putter-tommy-guns.jpg" alt="Polo concept 22: Putter Tommy Guns" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#22</span><h3>Putter Tommy Guns</h3></div><div class="choice" role="group" aria-label="Decision for #22"><button type="button" class="opt" data-v="keep" id="keep-22" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-22" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-22" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-22">What should change?</label><textarea id="note-22" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over small tossed repeat of exactly FOUR simple, instantly readable icons, each about 3 to 4 cm, drawn as bold flat filled shapes (not thin outlines): (1) a classic gangster fedora with a band; (2) two golf PUTTERS crossed in an X, each with a flat blade putter head; (3) a lit cigar with a curl of smoke; (4) a stack of cash banded with a paper strip. Icons alternate white and red on deep navy, evenly spaced. Collar in the same print; collar underside and inner placket solid red. Small 3 x 3 cm red square tag on the left chest beside the placket with a white bird mark. White buttons.</p></details></article><article class="card" data-id="23" id="c23"><a class="shot" href="img/2k/23-sleeps-with-the-fishes.jpg" target="_blank" rel="noopener"><img src="img/23-sleeps-with-the-fishes.jpg" alt="Polo concept 23: Sleeps With The Fishes" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#23</span><h3>Sleeps With The Fishes</h3></div><div class="choice" role="group" aria-label="Decision for #23"><button type="button" class="opt" data-v="keep" id="keep-23" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-23" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-23" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-23">What should change?</label><textarea id="note-23" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over small repeat of exactly THREE simple, instantly readable icons, each about 3 to 4 cm, drawn as bold flat filled shapes with clean edges (not thin sketchy lines), well spaced with plenty of plain background between them: (1) a white fish skeleton (head, spine, ribs, tail) seen side-on; (2) a golf flag on a pin standing in a small ring of water ripples; (3) a small black fedora floating on two wavy lines. White and navy icons on a mid-teal base, high contrast, evenly spaced on a staggered grid. Collar in the same print; collar underside and inner placket solid navy. Small 3 x 3 cm navy square tag on the left chest with a white bird mark. White buttons.</p></details></article><article class="card" data-id="24" id="c24"><a class="shot" href="img/2k/24-speakeasy-deco.jpg" target="_blank" rel="noopener"><img src="img/24-speakeasy-deco.jpg" alt="Polo concept 24: Speakeasy Deco" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#24</span><h3>Speakeasy Deco</h3></div><div class="choice" role="group" aria-label="Decision for #24"><button type="button" class="opt" data-v="keep" id="keep-24" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-24" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-24" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-24">What should change?</label><textarea id="note-24" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over tight geometric micro-pattern, about 2 cm repeat: 1920s art-deco fans and tiny fedoras interlocking like a texture, gold on black. Reads as a rich textured black from a distance. Collar in the same print; collar underside and inner placket solid gold. Small 3 x 3 cm black square tag with gold border on the left chest, gold bird mark. Black buttons.</p></details></article><article class="card" data-id="25" id="c25"><a class="shot" href="img/2k/25-cart-party.jpg" target="_blank" rel="noopener"><img src="img/25-cart-party.jpg" alt="Polo concept 25: Cart Party" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#25</span><h3>Cart Party</h3></div><div class="choice" role="group" aria-label="Decision for #25"><button type="button" class="opt" data-v="keep" id="keep-25" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-25" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-25" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-25">What should change?</label><textarea id="note-25" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over dense, bright, playful repeat like a lolly-bag print, motifs about 4 cm, packed close with little background showing: tiny golf carts, bluetooth speakers, beer cans, stubby holders and party streamers in pink, orange, yellow, green and blue on a cream base. Collar in the same print; collar underside and inner placket solid hot pink. Small 3 x 3 cm hot pink square tag on the left chest with a white bird mark. White buttons.</p></details></article><article class="card" data-id="26" id="c26"><a class="shot" href="img/2k/26-bangers.jpg" target="_blank" rel="noopener"><img src="img/26-bangers.jpg" alt="Polo concept 26: Bangers" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#26</span><h3>Bangers</h3></div><div class="choice" role="group" aria-label="Decision for #26"><button type="button" class="opt" data-v="keep" id="keep-26" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-26" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-26" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-26">What should change?</label><textarea id="note-26" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over small two-icon repeat on a regular grid, motifs about 3 cm: a boombox speaker alternating with a comic-book sound burst, red-coral bursts and mint speakers on a pale aqua base. Collar in the same print; collar underside and inner placket solid coral red. Small 3 x 3 cm mint square tag on the left chest with a white bird mark. White buttons.</p></details></article><article class="card" data-id="27" id="c27"><a class="shot" href="img/2k/27-kooka-crew-micro.jpg" target="_blank" rel="noopener"><img src="img/27-kooka-crew-micro.jpg" alt="Polo concept 27: Kooka Crew Micro" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#27</span><h3>Kooka Crew Micro</h3></div><div class="choice" role="group" aria-label="Decision for #27"><button type="button" class="opt" data-v="keep" id="keep-27" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-27" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-27" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-27">What should change?</label><textarea id="note-27" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over small repeat of kookaburras wearing tiny black fedoras, each about 3 cm, about 14 across the chest, with small gum leaves between, in cream and olive on a sage green base. Collar in the same print; collar underside and inner placket solid brown. Small 3 x 3 cm brown square tag on the left chest with a cream bird mark. White buttons.</p></details></article><article class="card" data-id="28" id="c28"><a class="shot" href="img/2k/28-snags-and-stubbies.jpg" target="_blank" rel="noopener"><img src="img/28-snags-and-stubbies.jpg" alt="Polo concept 28: Snags and Stubbies" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#28</span><h3>Snags and Stubbies</h3></div><div class="choice" role="group" aria-label="Decision for #28"><button type="button" class="opt" data-v="keep" id="keep-28" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-28" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-28" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-28">What should change?</label><textarea id="note-28" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over small tossed repeat, motifs about 3 cm, simple flat icons: (1) an Australian sausage sizzle: ONE brown grilled sausage lying diagonally across a single slice of square white sandwich bread folded around it, with a zig-zag of red tomato sauce on top. NOT an American hot dog, NO long bun; (2) a stubby holder (a short foam can cooler); (3) a pair of thongs (flip-flops); (4) sunglasses; (5) a golf tee. In red, navy, brown and white on a mustard yellow base. Collar in the same print; collar underside and inner placket solid navy. Small 3 x 3 cm navy square tag on the left chest with a white bird mark. White buttons.</p></details></article><article class="card" data-id="29" id="c29"><a class="shot" href="img/2k/29-croc-skin.jpg" target="_blank" rel="noopener"><img src="img/29-croc-skin.jpg" alt="Polo concept 29: Croc Skin" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#29</span><h3>Croc Skin</h3></div><div class="choice" role="group" aria-label="Decision for #29"><button type="button" class="opt" data-v="keep" id="keep-29" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-29" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-29" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-29">What should change?</label><textarea id="note-29" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over tonal crocodile-scale texture in dark bottle green and black, scales about 2 cm, with a few tiny fedora bird silhouettes hidden in the scales. Reads as a dark textured green from a distance. Collar in the same print; collar underside and inner placket solid black. Small 3 x 3 cm black square tag on the left chest with a green bird mark. Black buttons.</p></details></article><article class="card" data-id="30" id="c30"><a class="shot" href="img/2k/30-tropic-night.jpg" target="_blank" rel="noopener"><img src="img/30-tropic-night.jpg" alt="Polo concept 30: Tropic Night" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#30</span><h3>Tropic Night</h3></div><div class="choice" role="group" aria-label="Decision for #30"><button type="button" class="opt" data-v="keep" id="keep-30" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-30" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-30" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-30">What should change?</label><textarea id="note-30" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over small scattered repeat, motifs about 3 cm, plenty of navy background showing: frangipani flowers, tiny palm trees and little golf flags in white, coral and yellow on dark navy. Collar in the same print; collar underside and inner placket solid coral. Small 3 x 3 cm coral square tag on the left chest with a white bird mark. White buttons.</p></details></article><article class="card" data-id="31" id="c31"><a class="shot" href="img/2k/31-high-roller-tonal.jpg" target="_blank" rel="noopener"><img src="img/31-high-roller-tonal.jpg" alt="Polo concept 31: High Roller Tonal" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#31</span><h3>High Roller Tonal</h3></div><div class="choice" role="group" aria-label="Decision for #31"><button type="button" class="opt" data-v="keep" id="keep-31" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-31" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-31" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-31">What should change?</label><textarea id="note-31" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over small repeat, motifs about 3 cm: poker chips, dice and ace cards in tonal deep reds on a burgundy base, low contrast. Collar in the same print; collar underside and inner placket solid black. Small 3 x 3 cm black square tag on the left chest with a red bird mark. Black buttons.</p></details></article></div></section><section><header class="sec"><span class="round">Round 2</span><h2>Colour block</h2><p>Solid body, patterned sleeves and collar, chest logo.</p></header><div class="grid"><article class="card" data-id="32" id="c32"><a class="shot" href="img/2k/32-pinstripe-sleeves.jpg" target="_blank" rel="noopener"><img src="img/32-pinstripe-sleeves.jpg" alt="Polo concept 32: Pinstripe Sleeves" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#32</span><h3>Pinstripe Sleeves</h3></div><div class="choice" role="group" aria-label="Decision for #32"><button type="button" class="opt" data-v="keep" id="keep-32" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-32" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-32" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-32">What should change?</label><textarea id="note-32" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Colour-block layout: solid black body front and back. Both sleeves and the collar in charcoal pinstripe fabric (thin white pinstripes about 1.5 cm apart). Left chest: a round crest badge about 8 cm wide, white ring with the white bird mascot inside. White buttons.</p></details></article><article class="card" data-id="33" id="c33"><a class="shot" href="img/2k/33-checker-club.jpg" target="_blank" rel="noopener"><img src="img/33-checker-club.jpg" alt="Polo concept 33: Checker Club" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#33</span><h3>Checker Club</h3></div><div class="choice" role="group" aria-label="Decision for #33"><button type="button" class="opt" data-v="keep" id="keep-33" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-33" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-33" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-33">What should change?</label><textarea id="note-33" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Colour-block layout: solid sage green body front and back. Both sleeves and the collar in a black and cream checkerboard, checks about 2 cm. Left chest: the cream bird mascot about 7 cm tall. White buttons.</p></details></article><article class="card" data-id="34" id="c34"><a class="shot" href="img/2k/34-flock-sleeves.jpg" target="_blank" rel="noopener"><img src="img/34-flock-sleeves.jpg" alt="Polo concept 34: Flock Sleeves" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#34</span><h3>Flock Sleeves</h3></div><div class="choice" role="group" aria-label="Decision for #34"><button type="button" class="opt" data-v="keep" id="keep-34" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-34" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-34" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-34">What should change?</label><textarea id="note-34" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Colour-block layout: solid yellow (#feec45) body front and back. Both sleeves and the collar in a small repeat of black fedora birds on yellow, birds about 2.5 cm. Left chest: the black bird mascot about 7 cm tall. Black buttons.</p></details></article><article class="card" data-id="35" id="c35"><a class="shot" href="img/2k/35-tri-block.jpg" target="_blank" rel="noopener"><img src="img/35-tri-block.jpg" alt="Polo concept 35: Tri Block" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#35</span><h3>Tri Block</h3></div><div class="choice" role="group" aria-label="Decision for #35"><button type="button" class="opt" data-v="keep" id="keep-35" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-35" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-35" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-35">What should change?</label><textarea id="note-35" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Colour-block layout: cream body front and back, left sleeve navy, right sleeve yellow (#feec45), black collar. Left chest: a small black square patch about 5 cm with the cream bird mark inside. Black buttons.</p></details></article></div></section><section><header class="sec"><span class="round">Round 2</span><h2>Solid + badge</h2><p>Solid polo, contrast collar, 4 to 9 cm chest badge.</p></header><div class="grid"><article class="card" data-id="36" id="c36"><a class="shot" href="img/2k/36-clubhouse-crest.jpg" target="_blank" rel="noopener"><img src="img/36-clubhouse-crest.jpg" alt="Polo concept 36: Clubhouse Crest" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#36</span><h3>Clubhouse Crest</h3></div><div class="choice" role="group" aria-label="Decision for #36"><button type="button" class="opt" data-v="keep" id="keep-36" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-36" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-36" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-36">What should change?</label><textarea id="note-36" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Solid black polo with a contrast yellow (#feec45) collar. Left chest: a round crest badge about 8 cm wide: yellow ring, black centre, white bird mascot in the middle. Nothing else on the shirt. Black buttons.</p></details></article><article class="card" data-id="37" id="c37"><a class="shot" href="img/2k/37-cream-consigliere.jpg" target="_blank" rel="noopener"><img src="img/37-cream-consigliere.jpg" alt="Polo concept 37: Cream Consigliere" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#37</span><h3>Cream Consigliere</h3></div><div class="choice" role="group" aria-label="Decision for #37"><button type="button" class="opt" data-v="keep" id="keep-37" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-37" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-37" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-37">What should change?</label><textarea id="note-37" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Solid cream polo with a contrast chocolate brown collar. Left chest: a characterful illustrated badge about 9 cm tall of the fedora bird mascot holding a putter over its shoulder and a cigar, in brown, black and yellow. Nothing else on the shirt. White buttons.</p></details></article><article class="card" data-id="38" id="c38"><a class="shot" href="img/2k/38-navy-mark.jpg" target="_blank" rel="noopener"><img src="img/38-navy-mark.jpg" alt="Polo concept 38: Navy Mark" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#38</span><h3>Navy Mark</h3></div><div class="choice" role="group" aria-label="Decision for #38"><button type="button" class="opt" data-v="keep" id="keep-38" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-38" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-38" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-38">What should change?</label><textarea id="note-38" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Solid deep navy (#283846) polo, collar the same navy. Left chest: only a small white bird mascot about 4 cm tall. Minimal and clean. White buttons.</p></details></article></div></section><section><header class="sec"><span class="round">Round 2</span><h2>Check + solid collar</h2><p>All-over check, solid collar, small chest mark.</p></header><div class="grid"><article class="card" data-id="39" id="c39"><a class="shot" href="img/2k/39-mob-tartan.jpg" target="_blank" rel="noopener"><img src="img/39-mob-tartan.jpg" alt="Polo concept 39: Mob Tartan" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#39</span><h3>Mob Tartan</h3></div><div class="choice" role="group" aria-label="Decision for #39"><button type="button" class="opt" data-v="keep" id="keep-39" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-39" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-39" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-39">What should change?</label><textarea id="note-39" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over dark tartan plaid in bottle green, navy and black with a thin yellow (#feec45) overcheck, checks about 4 cm. Solid black collar. Left chest: small yellow bird mascot about 4 cm tall. Black buttons.</p></details></article><article class="card" data-id="40" id="c40"><a class="shot" href="img/2k/40-mint-gingham.jpg" target="_blank" rel="noopener"><img src="img/40-mint-gingham.jpg" alt="Polo concept 40: Mint Gingham" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#40</span><h3>Mint Gingham</h3></div><div class="choice" role="group" aria-label="Decision for #40"><button type="button" class="opt" data-v="keep" id="keep-40" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-40" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-40" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-40">What should change?</label><textarea id="note-40" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over mint and white gingham check, squares about 1.5 cm. Solid mint collar. Left chest: small navy bird mascot about 4 cm tall. White buttons.</p></details></article></div></section><section><header class="sec"><span class="round">Round 1</span><h2>Clean</h2><p>Solid polos. Same logo, different placements.</p></header><div class="grid"><article class="card" data-id="1" id="c1"><a class="shot" href="img/2k/01-black-classic.jpg" target="_blank" rel="noopener"><img src="img/01-black-classic.jpg" alt="Polo concept 1: Black Classic" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#1</span><h3>Black Classic</h3></div><div class="choice" role="group" aria-label="Decision for #1"><button type="button" class="opt" data-v="keep" id="keep-1" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-1" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-1" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-1">What should change?</label><textarea id="note-1" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Solid jet-black polo, black collar. Small white bird mascot printed on the left chest. The white &#x27;birdie mafia&#x27; wordmark printed small on the left sleeve. Back is plain.</p></details></article><article class="card" data-id="2" id="c2"><a class="shot" href="img/2k/02-white-yoke.jpg" target="_blank" rel="noopener"><img src="img/02-white-yoke.jpg" alt="Polo concept 2: White Yoke" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#2</span><h3>White Yoke</h3></div><div class="choice" role="group" aria-label="Decision for #2"><button type="button" class="opt" data-v="keep" id="keep-2" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-2" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-2" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-2">What should change?</label><textarea id="note-2" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Solid crisp white polo, white collar. Small black bird mascot on the left chest. Black &#x27;birdie mafia&#x27; wordmark printed across the upper back yoke just below the collar, about 20cm wide.</p></details></article><article class="card" data-id="3" id="c3"><a class="shot" href="img/2k/03-navy-tipped.jpg" target="_blank" rel="noopener"><img src="img/03-navy-tipped.jpg" alt="Polo concept 3: Navy Tipped" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#3</span><h3>Navy Tipped</h3></div><div class="choice" role="group" aria-label="Decision for #3"><button type="button" class="opt" data-v="keep" id="keep-3" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-3" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-3" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-3">What should change?</label><textarea id="note-3" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Solid deep navy (#283846) polo. Collar and sleeve cuffs have a thin bright yellow (#feec45) tipping stripe. Small white bird mascot on the left chest. Back is plain.</p></details></article><article class="card" data-id="5" id="c5"><a class="shot" href="img/2k/05-sage-hem.jpg" target="_blank" rel="noopener"><img src="img/05-sage-hem.jpg" alt="Polo concept 5: Sage Hem" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#5</span><h3>Sage Hem</h3></div><div class="choice" role="group" aria-label="Decision for #5"><button type="button" class="opt" data-v="keep" id="keep-5" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-5" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-5" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-5">What should change?</label><textarea id="note-5" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Solid muted sage green polo, cream collar. Small cream bird mascot on the left chest. Small cream &#x27;birdie mafia&#x27; wordmark on the back just above the hem, centred.</p></details></article></div></section><section><header class="sec"><span class="round">Round 1</span><h2>Mafia</h2><p>Mob films, pinstripes, casino tables.</p></header><div class="grid"><article class="card" data-id="6" id="c6"><a class="shot" href="img/2k/06-pinstripe-made-man.jpg" target="_blank" rel="noopener"><img src="img/06-pinstripe-made-man.jpg" alt="Polo concept 6: Pinstripe Made Man" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#6</span><h3>Pinstripe Made Man</h3></div><div class="choice" role="group" aria-label="Decision for #6"><button type="button" class="opt" data-v="keep" id="keep-6" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-6" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-6" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-6">What should change?</label><textarea id="note-6" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over charcoal grey pinstripe suit fabric, thin white pinstripes. Every so often a tiny fedora bird mascot sits hidden inside a pinstripe line. White collar trim. Small white bird on the left chest.</p></details></article><article class="card" data-id="7" id="c7"><a class="shot" href="img/2k/07-high-roller.jpg" target="_blank" rel="noopener"><img src="img/07-high-roller.jpg" alt="Polo concept 7: High Roller" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#7</span><h3>High Roller</h3></div><div class="choice" role="group" aria-label="Decision for #7"><button type="button" class="opt" data-v="keep" id="keep-7" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-7" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-7" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-7">What should change?</label><textarea id="note-7" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over print on deep casino-felt green: scattered playing cards (the King card shows the fedora bird mascot as the king), red and black poker chips, dice, golf tees and small golf flags. Black collar.</p></details></article><article class="card" data-id="8" id="c8"><a class="shot" href="img/2k/08-film-noir-crew.jpg" target="_blank" rel="noopener"><img src="img/08-film-noir-crew.jpg" alt="Polo concept 8: Film Noir Crew" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#8</span><h3>Film Noir Crew</h3></div><div class="choice" role="group" aria-label="Decision for #8"><button type="button" class="opt" data-v="keep" id="keep-8" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-8" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-8" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-8">What should change?</label><textarea id="note-8" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over black-and-white film noir pattern: the fedora bird mascot as 1930s gangsters holding golf clubs like tommy guns, smoking cigars, leaning on vintage golf carts and old sedans, under street lamps. High contrast monochrome. Black collar.</p></details></article><article class="card" data-id="9" id="c9"><a class="shot" href="img/2k/09-sleep-with-the-fishes.jpg" target="_blank" rel="noopener"><img src="img/09-sleep-with-the-fishes.jpg" alt="Polo concept 9: Sleep With The Fishes" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#9</span><h3>Sleep With The Fishes</h3></div><div class="choice" role="group" aria-label="Decision for #9"><button type="button" class="opt" data-v="keep" id="keep-9" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-9" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-9" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-9">What should change?</label><textarea id="note-9" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over deep navy print: rows of white fish skeletons, small golf flags, water hazard ripples, and the fedora bird mascot peeking over the waves. Subtle and witty. White collar.</p></details></article></div></section><section><header class="sec"><span class="round">Round 1</span><h2>Bird</h2><p>The fedora bird as the pattern.</p></header><div class="grid"><article class="card" data-id="10" id="c10"><a class="shot" href="img/2k/10-bird-gang-toss.jpg" target="_blank" rel="noopener"><img src="img/10-bird-gang-toss.jpg" alt="Polo concept 10: Bird Gang Toss" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#10</span><h3>Bird Gang Toss</h3></div><div class="choice" role="group" aria-label="Decision for #10"><button type="button" class="opt" data-v="keep" id="keep-10" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-10" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-10" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-10">What should change?</label><textarea id="note-10" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>White polo with an all-over tossed pattern of the black fedora bird mascot in many poses: swinging a driver, driving a golf cart, celebrating with arms up, stuck in a bunker, holding a putter. Each bird&#x27;s fedora is bright yellow (#feec45). Black collar.</p></details></article><article class="card" data-id="11" id="c11"><a class="shot" href="img/2k/11-yellow-flock.jpg" target="_blank" rel="noopener"><img src="img/11-yellow-flock.jpg" alt="Polo concept 11: Yellow Flock" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#11</span><h3>Yellow Flock</h3></div><div class="choice" role="group" aria-label="Decision for #11"><button type="button" class="opt" data-v="keep" id="keep-11" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-11" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-11" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-11">What should change?</label><textarea id="note-11" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Bright yellow (#feec45) polo with an evenly spaced repeat of small black fedora bird mascots, all facing forward. Black collar and black placket. Bold and loud.</p></details></article><article class="card" data-id="12" id="c12"><a class="shot" href="img/2k/12-foulard-micro.jpg" target="_blank" rel="noopener"><img src="img/12-foulard-micro.jpg" alt="Polo concept 12: Foulard Micro" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#12</span><h3>Foulard Micro</h3></div><div class="choice" role="group" aria-label="Decision for #12"><button type="button" class="opt" data-v="keep" id="keep-12" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-12" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-12" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-12">What should change?</label><textarea id="note-12" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Navy polo with a tiny, neat foulard micro-print of white fedora bird heads in a diagonal grid, like a classic tie pattern. Reads as plain from a distance. Navy collar.</p></details></article><article class="card" data-id="13" id="c13"><a class="shot" href="img/2k/13-silhouette-camo.jpg" target="_blank" rel="noopener"><img src="img/13-silhouette-camo.jpg" alt="Polo concept 13: Silhouette Camo" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#13</span><h3>Silhouette Camo</h3></div><div class="choice" role="group" aria-label="Decision for #13"><button type="button" class="opt" data-v="keep" id="keep-13" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-13" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-13" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-13">What should change?</label><textarea id="note-13" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over camouflage pattern where the camo blobs are made of overlapping fedora bird silhouettes, in black, charcoal and dark grey. Black collar.</p></details></article></div></section><section><header class="sec"><span class="round">Round 1</span><h2>Party</h2><p>Carts, bangers and banter.</p></header><div class="grid"><article class="card" data-id="14" id="c14"><a class="shot" href="img/2k/14-cart-party-hawaiian.jpg" target="_blank" rel="noopener"><img src="img/14-cart-party-hawaiian.jpg" alt="Polo concept 14: Cart Party Hawaiian" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#14</span><h3>Cart Party Hawaiian</h3></div><div class="choice" role="group" aria-label="Decision for #14"><button type="button" class="opt" data-v="keep" id="keep-14" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-14" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-14" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-14">What should change?</label><textarea id="note-14" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over Hawaiian-shirt style party print on teal: golf carts, cold beer cans, stubby holders, palm fronds, small bluetooth speakers, golf flags, and the fedora bird mascot riding a cart. Bright tropical colours. White collar.</p></details></article><article class="card" data-id="15" id="c15"><a class="shot" href="img/2k/15-equaliser.jpg" target="_blank" rel="noopener"><img src="img/15-equaliser.jpg" alt="Polo concept 15: Equaliser" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#15</span><h3>Equaliser</h3></div><div class="choice" role="group" aria-label="Decision for #15"><button type="button" class="opt" data-v="keep" id="keep-15" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-15" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-15" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-15">What should change?</label><textarea id="note-15" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>Black polo with bold horizontal bands of a yellow (#feec45) and white audio equaliser / sound-wave graphic across the chest and back, like a music visualiser. Small white bird on the left chest. Black collar.</p></details></article><article class="card" data-id="16" id="c16"><a class="shot" href="img/2k/16-retro-rave.jpg" target="_blank" rel="noopener"><img src="img/16-retro-rave.jpg" alt="Polo concept 16: Retro Rave" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#16</span><h3>Retro Rave</h3></div><div class="choice" role="group" aria-label="Decision for #16"><button type="button" class="opt" data-v="keep" id="keep-16" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-16" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-16" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-16">What should change?</label><textarea id="note-16" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over 1990s rave print: neon pink, electric blue and acid yellow squiggles, cassette tapes, boombox speakers, golf tees, smiley-faced golf flags, and the fedora bird mascot wearing sunglasses. Black collar.</p></details></article></div></section><section><header class="sec"><span class="round">Round 1</span><h2>Aussie</h2><p>Kookaburras, surf clubs, fairways at dusk.</p></header><div class="grid"><article class="card" data-id="17" id="c17"><a class="shot" href="img/2k/17-kooka-crew.jpg" target="_blank" rel="noopener"><img src="img/17-kooka-crew.jpg" alt="Polo concept 17: Kooka Crew" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#17</span><h3>Kooka Crew</h3></div><div class="choice" role="group" aria-label="Decision for #17"><button type="button" class="opt" data-v="keep" id="keep-17" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-17" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-17" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-17">What should change?</label><textarea id="note-17" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over print on cream: kookaburras wearing small black fedoras perched on eucalyptus branches with gum leaves and gumnuts, plus small golf flags. Earthy sage, ochre and brown. Brown collar.</p></details></article><article class="card" data-id="18" id="c18"><a class="shot" href="img/2k/18-surf-club-70s.jpg" target="_blank" rel="noopener"><img src="img/18-surf-club-70s.jpg" alt="Polo concept 18: Surf Club 70s" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#18</span><h3>Surf Club 70s</h3></div><div class="choice" role="group" aria-label="Decision for #18"><button type="button" class="opt" data-v="keep" id="keep-18" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-18" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-18" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-18">What should change?</label><textarea id="note-18" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over retro 1970s Australian surf-club print: a beach-side golf course, palm trees, a lighthouse, rolling waves, sunset stripes in faded orange, mustard and teal, with the fedora bird mascot on a surfboard. Cream collar.</p></details></article><article class="card" data-id="19" id="c19"><a class="shot" href="img/2k/19-roo-fairway-dusk.jpg" target="_blank" rel="noopener"><img src="img/19-roo-fairway-dusk.jpg" alt="Polo concept 19: Roo Fairway Dusk" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#19</span><h3>Roo Fairway Dusk</h3></div><div class="choice" role="group" aria-label="Decision for #19"><button type="button" class="opt" data-v="keep" id="keep-19" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-19" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-19" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-19">What should change?</label><textarea id="note-19" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over print of kangaroos grazing on golf fairways at dusk, gum trees, golf flags, dusty pink and purple sky, small fedora bird mascots on the flagsticks. Painterly but crisp, no brushstroke texture. Dark plum collar.</p></details></article><article class="card" data-id="20" id="c20"><a class="shot" href="img/2k/20-tropic-queenslander.jpg" target="_blank" rel="noopener"><img src="img/20-tropic-queenslander.jpg" alt="Polo concept 20: Tropic Queenslander" loading="lazy" width="1200" height="896"></a><div class="meta"><span class="num">#20</span><h3>Tropic Queenslander</h3></div><div class="choice" role="group" aria-label="Decision for #20"><button type="button" class="opt" data-v="keep" id="keep-20" aria-pressed="false">Keep</button><button type="button" class="opt" data-v="tweak" id="tweak-20" aria-pressed="false">Tweak</button><button type="button" class="opt" data-v="pass" id="pass-20" aria-pressed="false">Pass</button></div><div class="note" hidden><label for="note-20">What should change?</label><textarea id="note-20" rows="2" placeholder="e.g. bigger birds, swap the green for navy, lose the cuffs"></textarea></div><div class="tally" hidden></div><ul class="crew" hidden></ul><details class="spec"><summary>Design notes</summary><p>All-over tropical Queensland print: frangipani flowers, monstera and banana leaves on black, with small golf flags and the fedora bird mascot hidden among the leaves. Rich greens and white. Black collar.</p></details></article></div></section>
+</div></main>
+
+<div class="bar" role="region" aria-label="Your votes"><div class="wrap">
+  <span class="picks" id="picks">No votes yet</span>
+  <span class="save" id="save"></span>
+  <button type="button" class="copy" id="copy" disabled>Copy results</button>
+</div></div>
+
+<div class="zoom" id="zoom" role="dialog" aria-modal="true" aria-label="Zoomed polo" hidden>
+  <div class="zoom-bar">
+    <div class="zoom-title" id="zoom-title"></div>
+    <button type="button" class="zbtn nav" id="z-prev" aria-label="Previous shirt">&larr;</button>
+    <button type="button" class="zbtn nav" id="z-next" aria-label="Next shirt">&rarr;</button>
+    <button type="button" class="zbtn" id="z-out" aria-label="Zoom out">&minus;</button>
+    <span class="zoom-pct" id="z-pct">100%</span>
+    <button type="button" class="zbtn" id="z-in" aria-label="Zoom in">+</button>
+    <button type="button" class="zbtn zopt" data-v="keep" id="z-keep" aria-pressed="false">Keep</button>
+    <button type="button" class="zbtn zopt" data-v="tweak" id="z-tweak" aria-pressed="false">Tweak</button>
+    <button type="button" class="zbtn zopt" data-v="pass" id="z-pass" aria-pressed="false">Pass</button>
+    <button type="button" class="zbtn" id="z-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="zoom-note" id="zoom-note" hidden>
+    <label for="z-note">What should change?</label>
+    <input id="z-note" type="text" placeholder="e.g. bigger birds, swap the green for navy">
+  </div>
+  <div class="zoom-stage" id="zoom-stage"><img id="zoom-img" alt="" draggable="false"></div>
+</div>
+
+<script>
+(function () {
+  // Public (no sign-in) version. My picks: { id: { v: "keep" | "tweak" | "pass", note: "" } }.
+  // Votes POST to a Google Apps Script web app (config.js sets the URL) as one row per voter;
+  // the voter id is random and lives in this browser so a person can change their own votes.
+  var CFG = window.BM_VOTE || {};
+  var KEY = "bm-polo-r1-picks-v2";
+  var LABEL = { keep: "Keep", tweak: "Tweak", pass: "Pass" };
+  var VOTES = ["keep", "tweak", "pass"];
+  var picks = {};
+  try { picks = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { picks = {}; }
+  picks = clean(picks);
+  var mode = "connecting"; // connecting | shared | local | readonly
+  var uid = null, myName = "";
+  try { uid = localStorage.getItem("bm-vote-id"); myName = localStorage.getItem("bm-vote-name") || ""; } catch (e) {}
+  if (!uid) {
+    uid = "v_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    try { localStorage.setItem("bm-vote-id", uid); } catch (e) {}
+  }
+  var all = {};    // voter id -> picks (everyone else)
+  var names = {};  // voter id -> name as they typed it
+  var picksEl = document.getElementById("picks"), copyBtn = document.getElementById("copy"),
+      saveEl = document.getElementById("save"), statusEl = document.getElementById("status");
+
+  function cardFor(id) { return document.querySelector('.card[data-id="' + id + '"]'); }
+  function label(id) { return "#" + id + " " + cardFor(id).querySelector("h3").textContent; }
+  // other voters' docs are untrusted: keep only known cards, known votes, short string notes
+  function clean(raw) {
+    var out = {};
+    if (!raw || typeof raw !== "object") return out;
+    Object.keys(raw).forEach(function (id) {
+      var p = raw[id];
+      if (!cardFor(id) || !p || VOTES.indexOf(p.v) < 0) return;
+      out[id] = { v: p.v, note: typeof p.note === "string" ? p.note.slice(0, 500) : "" };
+    });
+    return out;
+  }
+  function voters() {
+    var m = {};
+    Object.keys(all).forEach(function (k) { m[k] = all[k]; });
+    if (uid) m[uid] = picks;
+    return m;
+  }
+  function tallyFor(id, vs) {
+    var t = { keep: 0, tweak: 0, pass: 0, list: [] };
+    Object.keys(vs).forEach(function (who) {
+      var p = vs[who][id];
+      if (!p) return;
+      t[p.v]++;
+      t.list.push({ who: who, v: p.v, note: p.note });
+    });
+    t.total = t.keep + t.tweak + t.pass;
+    t.score = t.keep * 2 + t.tweak - t.pass;
+    return t;
+  }
+  function who(id) { return id === uid ? (myName || "You") : (names[id] || "Someone"); }
+  function setStatus(text) { statusEl.hidden = !text; statusEl.textContent = text || ""; }
+
+  function render() {
+    var vs = voters(), shared = mode === "shared" || mode === "readonly";
+    document.querySelectorAll(".card").forEach(function (card) {
+      var id = card.dataset.id, p = picks[id], v = p ? p.v : "";
+      if (v) card.dataset.v = v; else delete card.dataset.v;
+      card.querySelectorAll(".opt").forEach(function (b) {
+        b.setAttribute("aria-pressed", b.dataset.v === v ? "true" : "false");
+        b.disabled = mode === "readonly" || mode === "connecting";
+      });
+      var note = card.querySelector(".note");
+      note.hidden = !v || mode === "readonly";
+      note.querySelector("label").textContent = v === "tweak" ? "What should change?" : "Comment (optional)";
+      var ta = note.querySelector("textarea");
+      if (document.activeElement !== ta) ta.value = p ? p.note || "" : "";
+      // group tally and comments
+      var t = tallyFor(id, vs), tEl = card.querySelector(".tally"), cEl = card.querySelector(".crew");
+      tEl.hidden = cEl.hidden = !shared || !t.total;
+      tEl.textContent = ""; cEl.textContent = "";
+      if (!shared || !t.total) return;
+      VOTES.forEach(function (k) {
+        if (!t[k]) return;
+        var s = document.createElement("span"); s.className = "t-" + k;
+        s.textContent = t[k] + " " + LABEL[k].toLowerCase(); tEl.appendChild(s);
+      });
+      t.list.sort(function (a, b) { return VOTES.indexOf(a.v) - VOTES.indexOf(b.v); }).forEach(function (r) {
+        var li = document.createElement("li"), tag = document.createElement("span"), name = document.createElement("b");
+        tag.className = "v v-" + r.v; tag.textContent = LABEL[r.v];
+        name.textContent = who(r.who);
+        li.appendChild(tag); li.appendChild(name);
+        if (r.note && r.note.trim()) li.appendChild(document.createTextNode(": " + r.note.trim()));
+        cEl.appendChild(li);
+      });
+    });
+    renderLeader(vs, shared);
+    var mine = VOTES.map(function (k) { var n = Object.keys(picks).filter(function (id) { return picks[id].v === k; }).length; return n ? n + " " + LABEL[k].toLowerCase() : ""; }).filter(Boolean);
+    var left = document.querySelectorAll(".card").length - Object.keys(picks).length;
+    picksEl.textContent = mine.length ? "Your votes: " + mine.join(" · ") + " · " + left + " to go" : "No votes yet";
+    copyBtn.disabled = shared ? !Object.keys(vs).some(function (k) { return Object.keys(vs[k]).length; }) : !mine.length;
+    if (mode === "local") { try { localStorage.setItem(KEY, JSON.stringify(picks)); } catch (e) {} }
+  }
+  function renderLeader(vs, shared) {
+    var box = document.getElementById("leader"), list = document.getElementById("leader-list");
+    var people = Object.keys(vs).filter(function (k) { return Object.keys(vs[k]).length; });
+    var rows = Array.prototype.map.call(document.querySelectorAll(".card"), function (c) { return { id: c.dataset.id, t: tallyFor(c.dataset.id, vs) }; })
+      .filter(function (r) { return r.t.keep + r.t.tweak > 0; })
+      .sort(function (a, b) { return b.t.score - a.t.score || b.t.keep - a.t.keep || a.id - b.id; })
+      .slice(0, 10);
+    box.hidden = !shared || !rows.length;
+    if (box.hidden) return;
+    document.getElementById("voters").textContent = people.length + (people.length === 1 ? " person has" : " people have") + " voted. Ranked by keeps, then tweaks, minus passes.";
+    list.textContent = "";
+    rows.forEach(function (r, i) {
+      var c = cardFor(r.id), li = document.createElement("li"), a = document.createElement("a");
+      a.href = "#c" + r.id;
+      var rank = document.createElement("span"); rank.className = "rank"; rank.textContent = i + 1;
+      var img = document.createElement("img"); img.src = c.querySelector(".shot img").getAttribute("src"); img.alt = ""; img.loading = "lazy";
+      var nm = document.createElement("span"); nm.className = "lname"; nm.textContent = label(r.id);
+      var ct = document.createElement("span"); ct.className = "lcount";
+      ct.textContent = VOTES.filter(function (k) { return r.t[k]; }).map(function (k) { return r.t[k] + " " + LABEL[k].toLowerCase(); }).join(" · ");
+      a.appendChild(rank); a.appendChild(img); a.appendChild(nm); a.appendChild(ct);
+      li.appendChild(a); list.appendChild(li);
+    });
+  }
+
+  // one POST at a time; notes are coalesced into one write per pause
+  var writing = false, dirty = false, timer = null;
+  function persist(delay) {
+    try { localStorage.setItem(KEY, JSON.stringify(picks)); } catch (e) {}
+    if (mode !== "shared") { render(); return; }
+    clearTimeout(timer);
+    saveEl.textContent = "Saving…";
+    timer = setTimeout(flush, delay);
+  }
+  function labels() {
+    var m = {};
+    document.querySelectorAll(".card").forEach(function (c) { m[c.dataset.id] = c.querySelector("h3").textContent; });
+    return m;
+  }
+  function flush(retried) {
+    if (writing) { dirty = true; return; }
+    writing = true;
+    // text/plain keeps the request "simple" so the browser skips the CORS preflight Apps Script can't answer
+    fetch(CFG.url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ voter: uid, name: myName, picks: picks, labels: labels() }) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res || !res.ok) throw new Error("rejected");
+        saveEl.textContent = "Saved";
+        if (res.voters) applyVoters(res.voters);
+      })
+      .catch(function () {
+        if (!retried) { writing = false; setTimeout(function () { flush(true); }, 1500 + Math.random() * 1500); return; }
+        saveEl.textContent = "Not saved, check your connection";
+      })
+      .then(function () {
+        writing = false;
+        if (dirty) { dirty = false; flush(); }
+      });
+  }
+
+  function choose(id, v) {
+    if (mode === "readonly" || mode === "connecting") return;
+    if (mode === "shared" && !myName) { askName(); return; }
+    var p = picks[id];
+    if (p && p.v === v) delete picks[id];
+    else picks[id] = { v: v, note: p ? p.note || "" : "" };
+    render();
+    persist(0);
+    if (picks[id] && v === "tweak" && zoom.hidden) cardFor(id).querySelector("textarea").focus();
+  }
+  function setNote(id, text) {
+    if (!picks[id]) return;
+    picks[id].note = text.slice(0, 500);
+    persist(800);
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest(".opt");
+    if (b) { choose(b.closest(".card").dataset.id, b.dataset.v); return; }
+    var s = e.target.closest(".shot");
+    if (s) { e.preventDefault(); openZoom(s.closest(".card")); }
+  });
+  document.addEventListener("input", function (e) {
+    var ta = e.target.closest(".note textarea");
+    if (ta) setNote(ta.closest(".card").dataset.id, ta.value);
+  });
+  document.addEventListener("focusout", function (e) {
+    if (e.target.closest && e.target.closest(".note textarea")) render();
+  });
+
+  function goLocal(msg) {
+    mode = "local";
+    setStatus(msg || "Voting hasn't opened yet. Your picks are saved in this browser and will count once it does.");
+    render();
+  }
+  // rows from the sheet are other people's input: validate every field
+  function applyVoters(rows) {
+    var next = {}, nm = {};
+    (Array.isArray(rows) ? rows : []).forEach(function (r) {
+      if (!r || typeof r.voter !== "string" || r.voter.length > 64) return;
+      next[r.voter] = clean(r.picks);
+      nm[r.voter] = typeof r.name === "string" ? r.name.slice(0, 40) : "";
+    });
+    if (next[uid] && !Object.keys(picks).length) picks = next[uid]; // same browser, storage cleared
+    if (nm[uid] && !myName) myName = nm[uid];
+    delete next[uid];
+    all = next; names = nm;
+    render();
+  }
+  var pollTimer = null;
+  function load(first) {
+    return fetch(CFG.url + (CFG.url.indexOf("?") > -1 ? "&" : "?") + "t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (first) {
+          mode = "shared";
+          setStatus("");
+          if (Object.keys(picks).length) persist(0); // bring earlier picks into the vote
+        }
+        applyVoters(res && res.voters);
+      });
+  }
+  function connect() {
+    if (!CFG.url) return goLocal();
+    var slow = setTimeout(function () { setStatus("Still connecting to the vote…"); }, 4000);
+    load(true).then(function () { clearTimeout(slow); }, function () {
+      clearTimeout(slow);
+      goLocal("Can't reach the vote right now. Your picks are saved in this browser; reload in a minute to send them.");
+    });
+    // other people's votes arrive on a slow poll; our own POST also returns the fresh list
+    pollTimer = setInterval(function () { if (mode === "shared" && !document.hidden) load(false).catch(function () {}); }, 30000);
+  }
+
+  /* Name prompt: shown before the first vote so the tally can say who said what. */
+  var nameBox = document.getElementById("namebox"), nameIn = document.getElementById("name-in");
+  function askName() {
+    nameBox.hidden = false;
+    nameIn.value = myName;
+    nameIn.focus();
+    nameBox.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+  document.getElementById("name-go").addEventListener("click", saveName);
+  nameIn.addEventListener("keydown", function (e) { if (e.key === "Enter") saveName(); });
+  function saveName() {
+    var n = nameIn.value.trim().slice(0, 40);
+    if (!n) { nameIn.focus(); return; }
+    myName = n;
+    try { localStorage.setItem("bm-vote-name", n); } catch (e) {}
+    nameBox.hidden = true;
+    document.getElementById("hello").textContent = "Voting as " + n + ".";
+    document.getElementById("hello").hidden = false;
+    if (Object.keys(picks).length) persist(0);
+  }
+  document.getElementById("hello").addEventListener("click", function (e) { if (e.target.closest("button")) askName(); });
+
+  /* Passcode gate: keeps the page out of casual view; the real guard is the unlisted link. */
+  (function gate() {
+    var g = document.getElementById("gate"), input = document.getElementById("gate-in"), err = document.getElementById("gate-err");
+    var want = String(CFG.passcode || "").trim().toLowerCase();
+    var ok = false;
+    try { ok = !want || localStorage.getItem("bm-vote-gate") === want; } catch (e) {}
+    if (ok) { g.hidden = true; return; }
+    document.body.style.overflow = "hidden";
+    function tryIt() {
+      if (input.value.trim().toLowerCase() === want) {
+        try { localStorage.setItem("bm-vote-gate", want); } catch (e) {}
+        g.hidden = true; document.body.style.overflow = ""; err.hidden = true;
+      } else { err.hidden = false; input.select(); }
+    }
+    document.getElementById("gate-go").addEventListener("click", tryIt);
+    input.addEventListener("keydown", function (e) { if (e.key === "Enter") tryIt(); });
+    input.focus();
+  })();
+
+  /* Zoom viewer: wheel / pinch / double-tap to zoom around the pointer, drag to pan. */
+  var zoom = document.getElementById("zoom"), stage = document.getElementById("zoom-stage"),
+      zimg = document.getElementById("zoom-img"), ztitle = document.getElementById("zoom-title"),
+      zpct = document.getElementById("z-pct"), znoteRow = document.getElementById("zoom-note"),
+      znote = document.getElementById("z-note"), zopts = document.querySelectorAll(".zopt");
+  var cards = [], cur = -1, scale = 1, tx = 0, ty = 0, MAX = 6, lastFocus = null;
+  var pointers = {}, pinchDist = 0, lastTap = 0;
+
+  function base() { return { w: zimg.offsetWidth, h: zimg.offsetHeight }; }
+  function clamp() {
+    var b = base(), sw = stage.clientWidth, sh = stage.clientHeight;
+    var w = b.w * scale, h = b.h * scale;
+    // pan only as far as the image edges; a smaller-than-stage image stays centred
+    var limX = Math.max(0, (w - sw) / 2), limY = Math.max(0, (h - sh) / 2);
+    tx = Math.max(-limX, Math.min(limX, tx));
+    ty = Math.max(-limY, Math.min(limY, ty));
+  }
+  function apply() {
+    clamp();
+    var b = base();
+    zimg.style.transform = "translate(" + (-b.w * scale / 2 + tx) + "px," + (-b.h * scale / 2 + ty) + "px) scale(" + scale + ")";
+    zpct.textContent = Math.round(scale * 100) + "%";
+  }
+  // zoom keeping the stage point (px, py) fixed; px/py relative to stage centre
+  function zoomAt(next, px, py) {
+    next = Math.max(1, Math.min(MAX, next));
+    var k = next / scale;
+    tx = px - (px - tx) * k;
+    ty = py - (py - ty) * k;
+    scale = next;
+    apply();
+  }
+  function centreOffset(clientX, clientY) {
+    var r = stage.getBoundingClientRect();
+    return { x: clientX - r.left - r.width / 2, y: clientY - r.top - r.height / 2 };
+  }
+  function show(i) {
+    cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+    cur = (i + cards.length) % cards.length;
+    var c = cards[cur];
+    scale = 1; tx = 0; ty = 0;
+    // show the grid image instantly, then swap in the 2K file once it loads
+    var hiSrc = c.querySelector(".shot").getAttribute("href");
+    zimg.src = c.querySelector("img").getAttribute("src");
+    if (hiSrc !== zimg.getAttribute("src")) {
+      var pre = new Image();
+      pre.onload = function () { if (cards[cur] === c) { zimg.src = hiSrc; } };
+      pre.src = hiSrc;
+    }
+    zimg.alt = c.querySelector("img").alt;
+    ztitle.innerHTML = "";
+    var n = document.createElement("span"); n.textContent = c.querySelector(".num").textContent;
+    ztitle.appendChild(n); ztitle.appendChild(document.createTextNode(c.querySelector("h3").textContent));
+    syncZoomPick();
+    if (zimg.complete) apply(); else zimg.onload = apply;
+  }
+  function syncZoomPick() {
+    var p = picks[cards[cur].dataset.id], v = p ? p.v : "";
+    zopts.forEach(function (b) {
+      b.setAttribute("aria-pressed", b.dataset.v === v ? "true" : "false");
+      b.disabled = mode === "readonly" || mode === "connecting";
+    });
+    var wasHidden = znoteRow.hidden;
+    znoteRow.hidden = !v || mode === "readonly";
+    znoteRow.querySelector("label").textContent = v === "tweak" ? "What should change?" : "Comment (optional)";
+    znote.value = p ? p.note || "" : "";
+    if (wasHidden !== znoteRow.hidden) apply(); // stage height changed
+  }
+  function openZoom(card) {
+    lastFocus = document.activeElement;
+    zoom.hidden = false;
+    document.body.style.overflow = "hidden";
+    show(Array.prototype.indexOf.call(document.querySelectorAll(".card"), card));
+    document.getElementById("z-close").focus();
+  }
+  function closeZoom() {
+    zoom.hidden = true;
+    document.body.style.overflow = "";
+    if (lastFocus) lastFocus.focus();
+  }
+  document.getElementById("z-close").addEventListener("click", closeZoom);
+  document.getElementById("z-prev").addEventListener("click", function () { show(cur - 1); });
+  document.getElementById("z-next").addEventListener("click", function () { show(cur + 1); });
+  document.getElementById("z-in").addEventListener("click", function () { zoomAt(scale * 1.5, 0, 0); });
+  document.getElementById("z-out").addEventListener("click", function () { zoomAt(scale / 1.5, 0, 0); });
+  zopts.forEach(function (b) {
+    b.addEventListener("click", function () {
+      choose(cards[cur].dataset.id, b.dataset.v);
+      syncZoomPick();
+      if (!znoteRow.hidden) znote.focus();
+    });
+  });
+  znote.addEventListener("input", function () {
+    setNote(cards[cur].dataset.id, znote.value);
+    render();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (zoom.hidden) return;
+    if (e.target === znote) { if (e.key === "Escape" || e.key === "Enter") znote.blur(); return; }
+    if (e.key === "Escape") closeZoom();
+    else if (e.key === "ArrowRight") show(cur + 1);
+    else if (e.key === "ArrowLeft") show(cur - 1);
+    else if (e.key === "+" || e.key === "=") zoomAt(scale * 1.5, 0, 0);
+    else if (e.key === "-") zoomAt(scale / 1.5, 0, 0);
+  });
+  window.addEventListener("resize", function () { if (!zoom.hidden) apply(); });
+  stage.addEventListener("wheel", function (e) {
+    e.preventDefault();
+    var p = centreOffset(e.clientX, e.clientY);
+    zoomAt(scale * Math.exp(-e.deltaY * 0.0025), p.x, p.y);
+  }, { passive: false });
+  stage.addEventListener("dblclick", function (e) {
+    var p = centreOffset(e.clientX, e.clientY);
+    zoomAt(scale > 1.05 ? 1 : 3, p.x, p.y);
+  });
+  stage.addEventListener("pointerdown", function (e) {
+    stage.setPointerCapture(e.pointerId);
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var ids = Object.keys(pointers);
+    if (ids.length === 2) {
+      var a = pointers[ids[0]], b = pointers[ids[1]];
+      pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+    } else if (e.pointerType === "touch") {
+      var now = Date.now();
+      if (now - lastTap < 300) { var p = centreOffset(e.clientX, e.clientY); zoomAt(scale > 1.05 ? 1 : 3, p.x, p.y); }
+      lastTap = now;
+    }
+    stage.classList.add("dragging");
+  });
+  stage.addEventListener("pointermove", function (e) {
+    var prev = pointers[e.pointerId];
+    if (!prev) return;
+    var ids = Object.keys(pointers);
+    if (ids.length === 2) {
+      pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var a = pointers[ids[0]], b = pointers[ids[1]];
+      var d = Math.hypot(a.x - b.x, a.y - b.y);
+      var m = centreOffset((a.x + b.x) / 2, (a.y + b.y) / 2);
+      if (pinchDist) zoomAt(scale * d / pinchDist, m.x, m.y);
+      pinchDist = d;
+      return;
+    }
+    tx += e.clientX - prev.x; ty += e.clientY - prev.y;
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    apply();
+  });
+  function endPointer(e) {
+    delete pointers[e.pointerId];
+    if (Object.keys(pointers).length < 2) pinchDist = 0;
+    if (!Object.keys(pointers).length) stage.classList.remove("dragging");
+  }
+  stage.addEventListener("pointerup", endPointer);
+  stage.addEventListener("pointercancel", endPointer);
+  copyBtn.addEventListener("click", function () {
+    // shared: every design anyone voted on, best first, with comments; local: just my picks
+    var vs = (mode === "shared" || mode === "readonly") ? voters() : { me: picks };
+    var lines = [mode === "local" ? "Birdie Mafia polo picks" : "Birdie Mafia polo vote (" + Object.keys(vs).filter(function (k) { return Object.keys(vs[k]).length; }).length + " voters)"];
+    Array.prototype.map.call(document.querySelectorAll(".card"), function (c) { return { id: c.dataset.id, t: tallyFor(c.dataset.id, vs) }; })
+      .filter(function (r) { return r.t.total; })
+      .sort(function (a, b) { return b.t.score - a.t.score || a.id - b.id; })
+      .forEach(function (r) {
+        lines.push(label(r.id) + ": " + VOTES.filter(function (k) { return r.t[k]; }).map(function (k) { return r.t[k] + " " + k; }).join(", "));
+        r.t.list.forEach(function (x) {
+          if (x.note && x.note.trim()) lines.push("  - " + (x.who === "me" ? "Me" : who(x.who)) + " (" + x.v + "): " + x.note.trim());
+        });
+      });
+    var text = lines.join("\n");
+    var done = function () { copyBtn.textContent = "Copied"; setTimeout(function () { copyBtn.textContent = "Copy results"; }, 1600); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { picksEl.textContent = text; });
+    } catch (e) { picksEl.textContent = text; }
+  });
+  if (myName) { document.getElementById("hello").textContent = "Voting as " + myName + ". "; var ch = document.createElement("button"); ch.type = "button"; ch.textContent = "Not you?"; document.getElementById("hello").appendChild(ch); document.getElementById("hello").hidden = false; }
+  render();
+  connect();
+})();
+</script>
+</body>
+</html>
